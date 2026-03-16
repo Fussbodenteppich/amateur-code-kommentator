@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amateur-Code-Kommentator EN/DE</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; }
+textarea { width: 100%; height: 200px; margin-bottom: 10px; }
+button { margin-right: 10px; padding: 5px 10px; }
+#output { white-space: pre-wrap; background: #f0f0f0; padding: 10px; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<h1>Amateur-Code-Kommentator EN/DE</h1>
+
+<textarea id="codeInput" placeholder="Hier deinen Code einfügen..."></textarea><br>
+
+<button id="commentBtn">Kommentieren</button>
+<button id="resetBtn">Reset</button>
+<button id="translateBtn">Deutsch ↔ Englisch</button>
+
+<div id="output"></div>
+
+<script>
+const codeInput = document.getElementById("codeInput");
+const output = document.getElementById("output");
+const commentBtn = document.getElementById("commentBtn");
+const resetBtn = document.getElementById("resetBtn");
+const translateBtn = document.getElementById("translateBtn");
+
+let isGerman = true; // Flag: Deutsch oder Englisch
+
+// Beispiel: 20 zufällige Kommentare pro Kategorie (Deutsch)
+const commentsDE = {
+  variable: [
+    "// Variable erstellen", "// Speicherplatz für Daten", "// Box für Werte",
+    "// Name für Wert", "// Platzhalter im Code", "// Container für Daten",
+    "// Etwas speichern", "// Wert ablegen", "// Daten sichern",
+    "// Neue Variable", "// Speicher definieren", "// Datenbox",
+    "// Name vergeben", "// Variable anlegen", "// Etwas einpacken",
+    "// Wert merken", "// Container anlegen", "// Speicherort definieren",
+    "// Daten aufbewahren", "// Box erstellen"
+  ],
+  loop: [
+    "// Macht etwas immer wieder", "// Wiederholt Code", "// For-Loop läuft durch Zahlen",
+    "// Wiederholungsschleife", "// Code läuft mehrfach", "// Zähler geht hoch",
+    "// For: kleine Schleife", "// Schleife startet und endet", "// Automatische Wiederholung",
+    "// Schritt-für-Schritt-Ausführung", "// For-Loop iteriert Elemente", "// Macht wieder dasselbe",
+    "// Zählt Dinge durch", "// Wiederholt Block", "// Automatische Wiederholung",
+    "// Loop, damit Code läuft", "// Schleife für Array", "// Führt Code mehrfach aus",
+    "// Wiederholungsschritt", "// Code wird wiederholt"
+  ],
+  action: [
+    "// Macht etwas", "// Aktion ausführen", "// Schritt im Code", "// Tut was",
+    "// Zeile läuft", "// Code wird ausgeführt", "// Etwas passiert", "// Befehl ausführen",
+    "// Hier passiert was", "// Aktion starten", "// Programm macht das", "// Zeile ausführen",
+    "// Schritt durchführen", "// Codeblock läuft", "// Etwas tun", "// Aktion im Code",
+    "// Programmaktion", "// Befehl läuft", "// Dieser Code macht", "// Schritte hier"
+  ]
+};
+
+// Beispiel: 20 zufällige Kommentare pro Kategorie (Englisch)
+const commentsEN = {
+  variable: [
+    "// Create variable", "// Storage for data", "// Box for values",
+    "// Name for value", "// Placeholder in code", "// Container for data",
+    "// Store something", "// Assign value", "// Save data",
+    "// New variable", "// Define storage", "// Data box",
+    "// Assign name", "// Create variable", "// Pack something",
+    "// Remember value", "// Define container", "// Storage location",
+    "// Keep data", "// Create box"
+  ],
+  loop: [
+    "// Does something repeatedly", "// Repeats code", "// For-loop iterates numbers",
+    "// Repeat loop", "// Code runs multiple times", "// Counter goes up",
+    "// For: small loop", "// Loop starts and ends", "// Automatic repetition",
+    "// Step-by-step execution", "// For-loop iterates elements", "// Does the same again",
+    "// Counts things", "// Repeat block", "// Automatic repetition",
+    "// Loop to run code", "// Loop for array", "// Executes code multiple times",
+    "// Repeat step", "// Code is repeated"
+  ],
+  action: [
+    "// Does something", "// Execute action", "// Step in code", "// Performs task",
+    "// Line runs", "// Code executes", "// Something happens", "// Execute command",
+    "// Something happens here", "// Start action", "// Program does this", "// Execute line",
+    "// Step execution", "// Code block runs", "// Perform something", "// Action in code",
+    "// Program action", "// Command runs", "// This line does", "// Steps here"
+  ]
+};
+
+// Hilfsfunktion: zufälligen Kommentar auswählen
+function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+// Funktion: Kommentare generieren
+function generateComments(code) {
+  const lines = code.split("\n");
+  const result = [];
+  const dict = isGerman ? commentsDE : commentsEN;
+
+  for (let line of lines) {
+    const trimmed = line.trim();
+    let comment = "";
+
+    if (/^(let|const|var)/.test(trimmed)) comment = pickRandom(dict.variable);
+    else if (/^(for|while)/.test(trimmed)) comment = pickRandom(dict.loop);
+    else if (/^function/.test(trimmed)) comment = pickRandom(dict.action);
+    else if (trimmed.length > 0) comment = pickRandom(dict.action);
+
+    if (comment) result.push(comment);
+    result.push(line);
+  }
+
+  return result.join("\n");
+}
+
+// Kommentieren
+commentBtn.addEventListener("click", () => {
+  const code = codeInput.value;
+  if (!code.trim()) return alert("Bitte Code eingeben!");
+  output.textContent = generateComments(code);
+});
+
+// Reset
+resetBtn.addEventListener("click", () => {
+  codeInput.value = "";
+  output.textContent = "";
+});
+
+// Übersetzen (Deutsch ↔ Englisch)
+translateBtn.addEventListener("click", () => {
+  isGerman = !isGerman;
+  output.textContent = generateComments(codeInput.value);
+});
+</script>
+
+</body>
+</html>
