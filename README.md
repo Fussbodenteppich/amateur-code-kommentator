@@ -1,2 +1,2 @@
-# amateur-code-kommentator
+# code-kommentator
 Kommentiert Code
